@@ -42,7 +42,6 @@ function main() {
             }
             $(`#harvardGallery`).append(`</tr><br></br>`)
         }
-        //generateRandomPainting(harvardString);
     });
     
     $.getJSON(chicagoApiURL + "?" + chicagoString, function(result) {
@@ -71,10 +70,10 @@ function main() {
 
 function generateRandomPainting(string) {
     let randomIndex = Math.floor(Math.random() * 10);
+    let randomChoice = Math.floor(Math.random() * 4) + 1;
     $.getJSON(harvardApiURL + "?" + string, function(data) {
         let artist = "";
         while(randomIndex < 10) {
-            console.log(randomIndex)
             if(data.records[randomIndex].primaryimageurl !== null) {
                 randomPainting = data.records[randomIndex].primaryimageurl;
                 break;
@@ -92,6 +91,7 @@ function generateRandomPainting(string) {
             }
         }
         console.log(artist);
+        $(`#${randomChoice.toString(10)}`).append(artist);
     });
 }
 
