@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>COMP 426 Final</title>
+        <link rel="stylesheet" href="node_modules/bulma/css/bulma.css"/>
+        <link rel="stylesheet" href="/stylesheet.css">
+    </head>
+    <body>
+        <section class="hero is-dark is-medium">
+            <div class="hero head">
+                <div class="container">
+                    <h1 class="title is-1">Art, BITCH</h1>
+                    <nav class="tabs is-medium is-centered">
+                        <div class="container">
+                            <ul>
+                                <li class="is-active"><a href="/game.html">Play</a></li>
+                                <li><a href="/harvard.html">Harvard Museum Gallery </a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </section>
+        
+        <div id="chicagoView">
+            <section class="section">
+                <div class="container">
+                    <table id="chicagoGallery">
+
+                    </table>
+                </div>
+            </section>
+        </div>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="node_modules/axios/dist/axios.min.js"></script>
+        <script type="module" src="render.js"></script>
+
+    </body>
+</html>
