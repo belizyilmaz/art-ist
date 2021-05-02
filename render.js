@@ -1,6 +1,8 @@
 let numPages = 0;
 let loading = false;
 let randomPainting;
+let harvardArtistChoice = "";
+let chicagoArtistChoice = "";
 
 var harvardApiURL = "https://api.harvardartmuseums.org/object";
 var chicagoApiURL = "https://api.artic.edu/api/v1/artworks";
@@ -10,6 +12,18 @@ let harvardStringRaw = $.param({
     size: 100,
     classification: "Paintings",
 });
+let chicagoStringRaw = $.param({
+    page: 1,
+    limit: 10,
+    offset: 0,
+});
+
+$(`#harvardButton`).on("click", {
+    str: harvardStringRaw
+}, generateRandomHarvardPainting);
+$(`#chicagoButton`).on("click", {
+    str: chicagoStringRaw
+}, generateRandomChicagoPainting);
 
 function main() {
     let harvardString = $.param({
@@ -68,7 +82,6 @@ function main() {
                 newUrl = newUrl.concat("/full/843,/0/default.jpg");
                 if(newUrl !== null)  {
                     if(result.data[idx].artist_title !== null) {
-                        console.log(result.data[idx].artist_title)
                         artist = artist.concat(result.data[idx].artist_title);
                     }
                     $(`#chicagoRow${i+(5*numPages)}`).append(`<td class="subtitle">
@@ -86,12 +99,27 @@ function main() {
     });
 }
 
-function generateRandomPainting(harvardString) {
-    let randomChoice = Math.floor(Math.random() * 4) + 1;
-    $.getJSON(harvardApiURL + "?" + harvardString, function(data) {
+function generateRandomHarvardPainting(event) {
+    $(`#buttons`).replaceWith(`<div id="buttons"></div>`);
+    $(`#choices`).append(`
+    <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
+    <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
+    <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
+    <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>`);
+    $(`#buttons`).append(`
+    <button class="button is-light" id="previous"> Previous </button>
+    <button class="button is-black is-medium" id="submit"> Submit Answer </button>
+    <button class="button is-light" id="previous"> Next </button>`);
+    $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
+    $(`#choices`).replaceWith(`<div id="choices">
+        <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
+        <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
+        <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
+        <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
+    </div> `);
+    $.getJSON(harvardApiURL + "?" + event.data.str, function(data) {
+        let randomChoice = Math.floor(Math.random() * 4) + 1;
         let randomIndex = Math.floor(Math.random() * data.records.length);
-        console.log("rando index is " + randomIndex)
-        let artist = "";
         while(randomIndex < data.records.length) {
             if(data.records[randomIndex].primaryimageurl !== null &&
                 'people' in data.records[randomIndex] && 
@@ -102,24 +130,104 @@ function generateRandomPainting(harvardString) {
             randomIndex = Math.floor(Math.random() * data.records.length);
         }
         if('people' in data.records[randomIndex] && 'primaryimageurl' in data.records[randomIndex] ) {
-            console.log("we in")
             $(`#paintingEx`).append(`<img src=${randomPainting} width=200 height=200></img>`)
             for(let i = 0; i < data.records[randomIndex].people.length; i++) {
-                artist = artist.concat(data.records[randomIndex].people[i].name);
+                harvardArtistChoice = harvardArtistChoice.concat(data.records[randomIndex].people[i].name);
                 if(i === data.records[randomIndex].people.length-1) {
                     break;
                 }
-                artist = artist.concat(" and ");
+                harvardArtistChoice = harvardArtistChoice.concat(" and ");
             }
-            console.log(artist);
-            $(`#${randomChoice.toString(10)}`).append(artist);
+            $(`#${randomChoice.toString(10)}`).append(`<h5 class="subtitle">${harvardArtistChoice}</h5>`);
+            document.getElementById(`id${randomChoice.toString(10)}`).value = harvardArtistChoice
         }
     });
+    $("#submit").on("click", handleHarvardSubmit);
 }
 
-main();
+function generateRandomChicagoPainting(event) {
+    $(`#buttons`).replaceWith(`<div id="buttons"></div>`);
+    $(`#choices`).append(`
+    <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
+    <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
+    <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
+    <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>`);
+    $(`#buttons`).append(`
+    <button class="button is-light" id="previous"> Previous </button>
+    <button class="button is-black is-medium" id="submit"> Submit Answer </button>
+    <button class="button is-light" id="previous"> Next </button>`);
+    $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
+    $(`#choices`).replaceWith(`<div id="choices">
+        <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
+        <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
+        <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
+        <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
+    </div> `);
+    $.getJSON(chicagoApiURL + "?" + event.data.str, function(result) {
+        let iiifUrl = result.config.iiif_url;
+        let newUrl = iiifUrl.concat("/");
+        let randomChoice = Math.floor(Math.random() * 4) + 1;
+        let randomIndex = Math.floor(Math.random() * result.data.length);
+        while(randomIndex < result.data.length) {
+            let imageId = result.data[randomIndex].image_id;
+            newUrl = newUrl.concat(imageId);
+            newUrl = newUrl.concat("/full/843,/0/default.jpg");
+            if(newUrl !== null && result.data[randomIndex].artist_title !== null) {
+                randomPainting = newUrl;
+                break;
+            } 
+            randomIndex = Math.floor(Math.random() * result.data.length);
+        }
+        if(newUrl !== null) {
+            chicagoArtistChoice = "";
+            $(`#paintingEx`).append(`<img src=${randomPainting} width=200 height=200></img>`)
+            chicagoArtistChoice = chicagoArtistChoice.concat(result.data[randomIndex].artist_title);            
+            $(`#${randomChoice.toString(10)}`).append(`<h5 class="subtitle">${chicagoArtistChoice}</h5>`);
+            document.getElementById(`id${randomChoice.toString(10)}`).value = chicagoArtistChoice
+        }
+    });
+    $("#submit").on("click", handleChicagoSubmit);
+}
 
-generateRandomPainting(harvardStringRaw);
+function handleHarvardSubmit(event) {
+    event.preventDefault();
+    const rbs = document.querySelectorAll('input[name="choice"]');
+    let selectedValue;
+    for (const rb of rbs) {
+        if (rb.checked) {
+            selectedValue = rb.value;
+            break;
+        }
+    }    
+    console.log(selectedValue);
+    console.log(harvardArtistChoice)
+    if(selectedValue === harvardArtistChoice) {
+        alert("correct!")
+    } else {
+        alert("try again, or view gallery to practice...")
+    }
+};
+
+function handleChicagoSubmit(event) {
+    event.preventDefault();
+    const rbs = document.querySelectorAll('input[name="choice"]');
+    let selectedValue;
+    for (const rb of rbs) {
+        if (rb.checked) {
+            selectedValue = rb.value;
+            break;
+        }
+    }    
+    console.log(selectedValue);
+    console.log(chicagoArtistChoice)
+    if(selectedValue === chicagoArtistChoice) {
+        alert("correct!")
+    } else {
+        alert("try again, or view gallery to practice...")
+    }
+};
+
+main();
 
 $(window).scroll(async function() {
     if ($(window).scrollTop() == $(document).height()-$(window).height() && !loading){

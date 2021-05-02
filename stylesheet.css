@@ -1,3 +1,7 @@
 div.container {
     text-align: center;
 }
+
+#games {
+    margin-left: 250px;
+}
