@@ -5,3 +5,72 @@ div.container {
 #games {
     margin-left: 250px;
 }
+
+div.form {
+    margin-left: 350px;
+    margin-right: 350px;
+}
+
+.sentence {
+    color: var(--font-color);
+}
+
+h4.score {
+    color: var(--font-color);
+}
+
+h1.welcome {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 26px;
+}
+ 
+.slider {
+    background-color: rgb(199, 196, 196);
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+  
+.slider:before {
+    background-color: white;
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 2px;
+    right: 30px;
+    bottom: 1px;
+}
+  
+input:checked + .slider {
+    background-color: #1982d8;
+}
+  
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+  
+.slider.round {
+    border-radius: 20px;
+}
+  
+.slider.round:before {
+    border-radius: 50%;
+}
+
+[data-theme="dark"] {
+    --font-color:white;
+}
+
+[data-theme="light"] {
+    --font-color: black;
+}

@@ -1,7 +1,6 @@
 {
   "name": "426-final",
   "version": "1.0.0",
-  "description": "",
   "main": "render.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,6 +18,10 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bulma": "^0.9.2",
+    "firebase": "^8.4.3",
+    "firebase-tools": "^9.10.0",
     "jquery": "^3.6.0"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }

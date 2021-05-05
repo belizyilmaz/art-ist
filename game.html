@@ -6,48 +6,63 @@
         <title>COMP 426 Final</title>
         <link rel="stylesheet" href="node_modules/bulma/css/bulma.css"/>
         <link rel="stylesheet" href="/stylesheet.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <section class="hero is-dark is-medium">
+        <section class="hero is-medium" id="heroHead">
             <div class="hero head">
                 <div class="container">
-                    <h1 class="title is-1">Art, BITCH</h1>
+                    <br>
+                    <br>
+                    <h1 class="welcome title is-1">Art-Ist</h1>
                     <nav class="tabs is-medium is-centered">
                         <div class="container">
                             <ul>
-                                <li><a href="/index.html">Back</a></li>
                                 <li><a href="/harvard.html">Harvard Museum Gallery </a></li>
                                 <li><a href="/chicago.html">Art Institute of Chicago Gallery </a></li>
+                                <li><a href="/index.html"><button class="logOutButton button is-black">Log Out</button></a></li>
+                                <li><em id="darkmode">Enable Dark Mode </em>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label> 
+                                </li>
                             </ul>
+                            
                         </div>
                     </nav>
                 </div>
             </div>
         </section>
 
-
-        <section class="section has-background-grey">
+        <section class="section has-background-light" id="section2">
             <div class="container">
                 <div class="hero-body">
+                    <div class="subtitle sentence is-4">Pick one of these categories to start playing the Art-Ist game.
+                        Are you a Harvard Museum geek? Or an Art Institute of Chicago geek? Get started to test your art
+                        knowledge! <p>Each correct answer is worth 5 points.</p>
+                    </div>
                     <div class="field is-grouped" id="games">
                         <p class="control">
-                            <button id="harvardButton" class="button is-danger is-large is-outlined is-inverted">HARVARD MUSEUM</button>
+                            <button id="harvardButton" class="button is-danger is-large is-outlined">HARVARD MUSEUM</button>
                         </p>
                         <p>
-                            <button id="chicagoButton" class="button is-danger is-large is-outlined is-inverted">ART INSTITUTE OF CHICAGO</button>
+                            <button id="chicagoButton" class="button is-danger is-large is-outlined">ART INSTITUTE OF CHICAGO</button>
                         </p>
                     </div>
-
                 </div>
             </div>
         </section>
 
-        <section class="section has-background-light">
+        <section class="section" id="section3">
             <div class="container">
                 <div class="hero-body">
                     <form>
+                        <h4 class="score title" id="scoreTitle">Score: </h4>
+                        <br>
                         <div id="paintingEx"> </div>
-                        <h4 class="subtitle">Pick the artist for the given painting.</h4>
+                        <br>
+                        <div class="subtitle sentence" id="question"></div>
                         <div id="choices"></div> 
                         <br></br>
                         <div id="buttons"></div>
@@ -56,10 +71,14 @@
             </div>
         </section>
         
-        
+        <script src="//www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="node_modules/axios/dist/axios.min.js"></script>
+
         <script type="module" src="render.js"></script>
+        
     </body>
 </html>

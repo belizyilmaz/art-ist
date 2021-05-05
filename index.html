@@ -6,30 +6,56 @@
         <title>COMP 426 Final</title>
         <link rel="stylesheet" href="node_modules/bulma/css/bulma.css"/>
         <link rel="stylesheet" href="/stylesheet.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <section class="hero is-dark is-medium">
+        <section class="heroHead hero is-medium">
             <div class="hero head">
                 <div class="container">
-                    <h1 class="title is-1">Art, BITCH</h1>
-                    <nav class="tabs is-medium is-centered">
-                        <div class="container">
-                            <ul>
-                                <li><a href="/game.html">Play</a></li>
-                                <li><a href="/harvard.html">Harvard Museum Gallery</a></li>
-                                <li><a href="/chicago.html">Art Institute of Chicago Gallery </a></li>
-                            </ul>
-                        </div>
-                    </nav>
+                    <br>
+                    <br>
+                    <h1 class="welcome subtitle is-2">Welcome to Art-Ist</h1>
+                    <br>
                 </div>
             </div>
         </section>
         
-       
+        <section class="section has-background-light" id="messageSection">
+            <div class="container">
+                <h1 class="subtitle is-5">In this website, you will be able to view two galleries: 
+                    the Harvard Museum gallery and the Art Institute of Chicago gallery. To help improve your art knowledge,
+                    you can practice by playing the Art-Ist game where you you will be asked to pick the correct artist for the 
+                    given painting from either of the galleries available on Art-Ist. Get started and test your art knowledge!</h1>
+            </div>
+        </section>
+
+        <section class="section" id="loginSection">
+            <div class="container">
+                <div class="columns">
+                    <div class="column loginCol">
+                        <div class="subtitle sentence is-4">Already have an account?</div>
+                        <button class="button is-info is-light is-outlined is-medium" id="login">Login</button>
+                    </div>
+                    <div class="column signupCol">
+                        <div class="subtitle sentence is-4">Join the Art-Ist family to test your art knowledge by playing our art-artist matching game!</div>
+                        <button class="button is-success is-light is-outlined is-medium" id="signup">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </section>
         
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js"></script>
+        <script src="//www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="node_modules/axios/dist/axios.min.js"></script>
+
         <script type="module" src="render.js"></script>
 
     </body>

@@ -8,15 +8,23 @@
         <link rel="stylesheet" href="/stylesheet.css">
     </head>
     <body>
-        <section class="hero is-dark is-medium">
+        <section class="hero is-medium" id="heroHead">
             <div class="hero head">
                 <div class="container">
-                    <h1 class="title is-1">Art, BITCH</h1>
+                    <br>
+                    <h1 class="welcome title is-1">Art-Ist</h1>
                     <nav class="tabs is-medium is-centered">
                         <div class="container">
                             <ul>
-                                <li><a href="/game.html">Play</a></li>
                                 <li><a href="/chicago.html">Art Institute of Chicago Gallery </a></li>
+                                <li><a href="/game.html">Play</a></li>
+                                <li><a href="/index.html"><button class="logOutButton button is-black">Log Out</button></a></li>
+                                <li><em id="darkmode">Enable Dark Mode </em>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label> 
+                                </li>
                             </ul>
                         </div>
                     </nav>
@@ -25,7 +33,7 @@
         </section>
         
         <div id="harvardView">
-            <section class="section">
+            <section class="section" id="section2">
                 <div class="container">
                     <table id="harvardGallery">
 
@@ -33,11 +41,12 @@
                 </div>
             </section>
         </div>
-        
+        <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="node_modules/axios/dist/axios.min.js"></script>
         <script type="module" src="render.js"></script>
-
+       
     </body>
 </html>
