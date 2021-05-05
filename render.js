@@ -32,7 +32,7 @@ async function getHarvard(pages) {
         url: "https://api.harvardartmuseums.org/object",
         params: {
             "apikey": "2f6192ac-c482-48b8-b123-eed87d6b5a70",
-            "size": 100,
+            "size": 12,
             "classification": "Paintings",
             "page": pages+1,
         },
@@ -215,28 +215,39 @@ async function loadHarvard() {
     harvards = await getHarvard(numPages);
     let current = 0;
     for(let i = 0; i < ((harvards.data.records.length)/5); i++) {
-        $(`#harvardGallery`).append(`<tr id="harvardRow${i+(5*numPages)}">`)
+        $(`#harvardGallery`).append(`<tr id="harvardRow${i+(3*numPages)}">`);
+        console.log(i+(3*numPages));
         for(let j = i; j < 5+i; j++) {
             let artists = "";
-            if(harvards.data.records[current].primaryimageurl !== null) {
-                if('people' in harvards.data.records[current]) {
-                    for(let k = 0; k < harvards.data.records[current].people.length; k++) {
-                        artists = artists.concat(harvards.data.records[current].people[k].name);
-                        if(k === harvards.data.records[current].people.length-1) {
-                            break;
+            while(current < 12) {
+                if('primaryimageurl' in harvards.data.records[current] &&
+                    harvards.data.records[current].primaryimageurl !== null) {
+                    if('people' in harvards.data.records[current]) {
+                        for(let k = 0; k < harvards.data.records[current].people.length; k++) {
+                            artists = artists.concat(harvards.data.records[current].people[k].name);
+                            if(k === harvards.data.records[current].people.length-1) {
+                                break;
+                            }
+                            artists = artists.concat(", ");
                         }
-                        artists = artists.concat(", ");
                     }
+                    $(`#harvardRow${i+(3*numPages)}`).append(`<td class="sentence subtitle">
+                    <img src=${harvards.data.records[current].primaryimageurl} width="100" height="100">
+                    <br></br>
+                    <strong> <div class="sentence"> Title: </div></strong> ${harvards.data.records[current].title}</img>
+                    <br></br>
+                    <strong> <div class="sentence">Artist: </div></strong> ${artists} 
+                    </td>`)
+                    current++;
+                    break;
+                } else  {
+                    current++;
                 }
-                $(`#harvardRow${i+(5*numPages)}`).append(`<td class="sentence subtitle">
-                <img src=${harvards.data.records[current].primaryimageurl} width="100" height="100">
-                <br></br>
-                <strong> <div class="sentence"> Title: </div></strong> ${harvards.data.records[current].title}</img>
-                <br></br>
-                <strong> <div class="sentence">Artist: </div></strong> ${artists} 
-                </td>`)
             }
-            current++;
+            if(current === 12) {
+                harvards = await getHarvard(numPages+1);
+                current = 0;
+            }
         }
         $(`#harvardGallery`).append(`</tr><br></br>`)
     }
@@ -247,26 +258,37 @@ async function loadChicago() {
     let idx = 0;
     let iiifUrl = chicagos.data.config.iiif_url;
     for(let i = 0; i < (chicagos.data.data.length)/5; i++) {
-        $(`#chicagoGallery`).append(`<tr id="chicagoRow${i+(5*numPages)}">`)
+        $(`#chicagoGallery`).append(`<tr id="chicagoRow${i+(2*numPages)}">`)
         for(let j = i; j < 5+i; j++) {
             let artist = "";
-            let imageId = chicagos.data.data[idx].image_id;
-            let newUrl = iiifUrl.concat("/");
-            newUrl = newUrl.concat(imageId);
-            newUrl = newUrl.concat("/full/843,/0/default.jpg");
-            if(newUrl !== null)  {
-                if(chicagos.data.data[idx].artist_title !== null) {
-                    artist = artist.concat(chicagos.data.data[idx].artist_title);
-                }
-                $(`#chicagoRow${i+(5*numPages)}`).append(`<td class="sentence subtitle">
-                <img src=${newUrl} width="100" height="100"></img>
-                <br></br>
-                <strong> <div class="sentence">Title: </div></strong> ${chicagos.data.data[idx].title}
-                <br></br>
-                <strong> <div class="sentence">Artist: </div></strong> ${artist} 
-                </td>`)
+            while(idx < chicagos.data.data.length) {
+                if(chicagos.data.data[idx] !== null) {
+                    if('image_id' in chicagos.data.data[idx] && chicagos.data.data[idx].image_id !== null) {
+                        let imageId = chicagos.data.data[idx].image_id;
+                        let newUrl = iiifUrl.concat("/");
+                        newUrl = newUrl.concat(imageId);
+                        newUrl = newUrl.concat("/full/843,/0/default.jpg");
+                        if(chicagos.data.data[idx].artist_title !== null) {
+                            artist = artist.concat(chicagos.data.data[idx].artist_title);
+                        }
+                        $(`#chicagoRow${i+(2*numPages)}`).append(`<td class="sentence subtitle">
+                        <img src=${newUrl} width="100" height="100"></img>
+                        <br></br>
+                        <strong> <div class="sentence">Title: </div></strong> ${chicagos.data.data[idx].title}
+                        <br></br>
+                        <strong> <div class="sentence">Artist: </div></strong> ${artist} 
+                        </td>`);
+                        idx++;
+                        break;
+                    } 
+                } 
                 idx++;
+                
             }  
+            if(idx === 10) {
+                chicagos = await getChicago(numPages+1);
+                idx = 0;
+            }    
         }
         $(`#chicagoGallery`).append(`</tr><br></br>`)
     }
@@ -295,7 +317,9 @@ async function generateRandomHarvardPainting(event) {
     harvards = await getHarvard(0);
     let randomChoice = Math.floor(Math.random() * 4) + 1;
     let randomIndex = Math.floor(Math.random() * harvards.data.records.length);
+    console.log(harvards.data.records.length);
     while(randomIndex < harvards.data.records.length) {
+        console.log(randomIndex);
         if(harvards.data.records[randomIndex].primaryimageurl !== null &&
             'people' in harvards.data.records[randomIndex] && 
             'primaryimageurl' in harvards.data.records[randomIndex]) {
@@ -304,7 +328,7 @@ async function generateRandomHarvardPainting(event) {
         } 
         randomIndex = Math.floor(Math.random() * harvards.data.records.length);
     }
-    if('people' in harvards.data.records[randomIndex] && 'primaryimageurl' in harvards.data.records[randomIndex] ) {
+    if('people' in harvards.data.records[randomIndex] && 'primaryimageurl' in harvards.data.records[randomIndex]) {
         harvardArtistChoice = "";
         $(`#paintingEx`).append(`<img src=${randomPainting} width=200 height=200></img>`)
         for(let i = 0; i < harvards.data.records[randomIndex].people.length; i++) {
@@ -341,26 +365,28 @@ async function generateRandomChicagoPainting(event) {
     let iiifUrl = chicagos.data.config.iiif_url;
     let newUrl = iiifUrl.concat("/");
     let randomChoice = Math.floor(Math.random() * 4) + 1;
-    let randomIndex = Math.floor(Math.random() * chicagos.data.data.length);
+    let randomIndex = Math.floor(Math.random() * (chicagos.data.data.length));
+    console.log(chicagos.data.data[3]);
     while(randomIndex < chicagos.data.data.length) {
-        let imageId = chicagos.data.data[randomIndex].image_id;
-        newUrl = newUrl.concat(imageId);
-        newUrl = newUrl.concat("/full/843,/0/default.jpg");
-        if(newUrl !== null && chicagos.data.data[randomIndex].artist_title !== null) {
-            randomPainting = newUrl;
-            break;
-        } 
+        console.log(randomIndex);
+        if('image_id' in chicagos.data.data[randomIndex] && chicagos.data.data[randomIndex].image_id !== null) {
+            let imageId = chicagos.data.data[randomIndex].image_id;
+            newUrl = newUrl.concat(imageId);
+            newUrl = newUrl.concat("/full/843,/0/default.jpg");
+            if(newUrl !== null && chicagos.data.data[randomIndex].artist_title !== null) {
+                randomPainting = newUrl;
+                break;
+            } 
+        }
         randomIndex = Math.floor(Math.random() * chicagos.data.data.length);
     }
-    if(newUrl !== null) {
-        chicagoArtistChoice = "";
-        $(`#paintingEx`).append(`<img src=${randomPainting} width=200 height=200></img>`)
-        chicagoArtistChoice = chicagoArtistChoice.concat(chicagos.data.data[randomIndex].artist_title);            
-        $(`#${randomChoice.toString(10)}`).append(`<h5 class="sentence subtitle">${chicagoArtistChoice}</h5>`);
-        document.getElementById(`id${randomChoice.toString(10)}`).value = chicagoArtistChoice
-        putChoicesRandomly(randomChoice);
-        console.log(chicagoArtistChoice);
-    }
+    chicagoArtistChoice = "";
+    $(`#paintingEx`).append(`<img src=${randomPainting} width=200 height=200></img>`)
+    chicagoArtistChoice = chicagoArtistChoice.concat(chicagos.data.data[randomIndex].artist_title);            
+    $(`#${randomChoice.toString(10)}`).append(`<h5 class="sentence subtitle">${chicagoArtistChoice}</h5>`);
+    document.getElementById(`id${randomChoice.toString(10)}`).value = chicagoArtistChoice
+    putChoicesRandomly(randomChoice);
+    console.log(chicagoArtistChoice);
     $("#submit").on("click", handleChicagoSubmit);
     $("#next").on("click", generateRandomChicagoPainting);
 }
@@ -476,7 +502,6 @@ $(window).scroll(async function() {
     if ($(window).scrollTop() == $(document).height()-$(window).height() && !loading){
         loading = true;
         numPages++;
-        console.log(numPages)
         main();
         loading = false;
     }
@@ -500,6 +525,9 @@ function switchTheme(e) {
         if(document.getElementById("section3") !== null) {
             document.getElementById("section3").classList.add('has-background-dark');
         }
+        if(document.getElementById("logout") !== null) {
+            document.getElementById("logout").classList.add("is-inverted");
+        }
         document.documentElement.setAttribute('data-theme', 'dark');
     } else {
         console.log("undo");
@@ -516,6 +544,9 @@ function switchTheme(e) {
         }
         if(document.getElementById("section3") !== null) {
             document.getElementById("section3").classList.remove('has-background-dark');
+        }
+        if(document.getElementById("logout") !== null) {
+            document.getElementById("logout").classList.remove("is-inverted");
         }
         document.documentElement.setAttribute('data-theme', 'light');
     }
