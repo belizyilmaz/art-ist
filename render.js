@@ -520,4 +520,6 @@ function switchTheme(e) {
         document.documentElement.setAttribute('data-theme', 'light');
     }
 }
-toggleSwitch.addEventListener('change', switchTheme, true);
+if(toggleSwitch !== null) {
+    toggleSwitch.addEventListener('change', switchTheme, true);
+}
