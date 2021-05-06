@@ -9,30 +9,13 @@ let randomArtists = [];
 let harvards = [];
 let chicagos = [];
 
-var firebaseConfig = {
-    apiKey: "AIzaSyBXbgKrI6lK1bBUQC75dLVjgplGQk0ZW9s",
-    authDomain: "art-ist.firebaseapp.com",
-    databaseURL: "https://art-ist-default-rtdb.firebaseio.com",
-    projectId: "art-ist",
-    storageBucket: "art-ist.appspot.com",
-    messagingSenderId: "1005640377141",
-    appId: "1:1005640377141:web:06249e7134eb815b83627c",
-    measurementId: "G-THFRVF1K0C"
-};
-firebase.initializeApp(firebaseConfig);  
-
-var firstName = "";
-var lastName = "";
-var email = "";
-var password = "";
-
-async function getHarvard(pages) {
+async function getHarvard(pages, size) {
     const result = await axios({
         method: 'get',
         url: "https://api.harvardartmuseums.org/object",
         params: {
             "apikey": "2f6192ac-c482-48b8-b123-eed87d6b5a70",
-            "size": 12,
+            "size": size,
             "classification": "Paintings",
             "page": pages+1,
         },
@@ -40,13 +23,13 @@ async function getHarvard(pages) {
     return result;
 };
 
-async function getChicago(pages) {
+async function getChicago(pages, limit) {
     const result = await axios({
         method: 'get',
         url: "https://api.artic.edu/api/v1/artworks",
         params: {
             "page": pages+1,
-            "limit": 10,
+            "limit": limit,
             "offset": pages*10,
         },
     });
@@ -56,170 +39,14 @@ async function getChicago(pages) {
 $(`#harvardButton`).on("click", generateRandomHarvardPainting);
 $(`#chicagoButton`).on("click", generateRandomChicagoPainting);
 
-$(`#login`).on("click", function() {
-    displayLogin();
-});  
-
-function displayLogin() {
-    $(`#loginSection`).replaceWith(`<section class="section" id="loginSection">
-    <div class="container">
-        <div class="form">
-            <div class="field">
-                <p class="control has-icons-left has-icons-right">
-                    <input class="input loginEmailInput" type="email" placeholder="Email">
-                    <span class="icon is-small is-left">
-                        <i class="fa fa-envelope"></i>
-                    </span>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control has-icons-left">
-                    <input class="input loginPasswordInput" type="password" placeholder="Password">
-                    <span class="icon is-small is-left">
-                        <i class="fa fa-lock"></i>
-                    </span>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control">
-                    <button class="button is-success loginSend">Login</button>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control">
-                    <button class="button is-light" id="backSend"><a href="/index.html">Back</a></button>
-                </p>
-            </div>
-        </div>
-    </div>
-    </section>`);
-    loginRequest();
-}
-
-function loginRequest() {
-    $(`.loginSend`).on("click", function() {
-        email = $(`.loginEmailInput`).val().trim();
-        password = $(`.loginPasswordInput`).val().trim();
-        firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            window.location.href = "/game.html";
-        })
-        .catch((error) => {
-            var errorMessage = error.message;
-            alert(errorMessage);
-            console.log(error);
-        });
-        return false;
-    });
-}
-
-$(`#signup`).on("click", function() {
-    displaySignup();
-    $(`.signupSend`).on("click", function() {
-        firstName = $(`#firstnameinput`).val().trim();
-        email = $(`#emailinput`).val().trim();
-        password = $(`#passwordinput`).val().trim();
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            var user = firebase.auth().currentUser;
-            user.updateProfile({
-                displayName: firstName,
-            }).then(function() {
-                console.log("name set");
-            }).catch(function(error) {
-                var errorMessage = error.message;
-                alert(errorMessage);
-                console.log(error);
-            });
-            console.log(userCredential);
-            $(`#messageSection`).replaceWith(`<section class="section has-background-light" id="messageSection">
-            <div class="container">
-                <h1 class="subtitle is-4">You have successfully signed up. Log in to continue with 
-                the website. Now you can play our game and earn ArtPoints.</h1>
-            </div>
-            </section>`)
-            displayLogin();
-            console.log("success")
-        })
-        .catch(function(error) {
-            var errorMessage = error.message;
-            alert(errorMessage);
-            console.log(error);
-        });
-        return false;
-    });
-});
-
-$(`.logOutButton`).on("click", function() {
-    firebase.auth().signOut().then(() => {
-        console.log("logged out");
-      }).catch((error) => {
-        var errorMessage = error.message;
-        alert(errorMessage);
-        console.log(error);
-      });
-});
-
-function displaySignup() {
-    $(`#loginSection`).replaceWith(`<section class="section" id="loginSection">
-    <div class="container">
-        <div class="form">
-            <div class="field">
-                <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="text" placeholder="First Name" id="firstnameinput">
-                    <span class="icon is-small is-left">
-                        <i class="fa fa-user"></i>
-                    </span>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="text" placeholder="Last Name" id="lastnameinput">
-                    <span class="icon is-small is-left">
-                        <i class="fa fa-user"></i>
-                    </span>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="email" placeholder="Email" id="emailinput">
-                    <span class="icon is-small is-left">
-                        <i class="fa fa-envelope"></i>
-                    </span>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control has-icons-left">
-                    <input class="input" type="password" placeholder="Password" id="passwordinput">
-                    <span class="icon is-small is-left">
-                        <i class="fa fa-lock"></i>
-                    </span>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control">
-                    <button class="button is-success signupSend">Sign Up</button>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control">
-                    <button class="button is-light" id="backSend"><a href="/index.html">Back</a></button>
-                </p>
-            </div>
-        </div>
-    </div>
-    </section>`);
-}
-
 async function loadHarvard() {
-    harvards = await getHarvard(numPages);
+    harvards = await getHarvard(numPages, 12);
     let current = 0;
     for(let i = 0; i < ((harvards.data.records.length)/5); i++) {
         $(`#harvardGallery`).append(`<tr id="harvardRow${i+(3*numPages)}">`);
-        console.log(i+(3*numPages));
         for(let j = i; j < 5+i; j++) {
             let artists = "";
-            while(current < 12) {
+            while(current < harvards.data.records.length) {
                 if('primaryimageurl' in harvards.data.records[current] &&
                     harvards.data.records[current].primaryimageurl !== null) {
                     if('people' in harvards.data.records[current]) {
@@ -244,8 +71,8 @@ async function loadHarvard() {
                     current++;
                 }
             }
-            if(current === 12) {
-                harvards = await getHarvard(numPages+1);
+            if(current === harvards.data.records.length) {
+                harvards = await getHarvard(numPages+1, 12);
                 current = 0;
             }
         }
@@ -254,7 +81,7 @@ async function loadHarvard() {
 }
 
 async function loadChicago() {
-    chicagos = await getChicago(numPages);
+    chicagos = await getChicago(numPages, 10);
     let idx = 0;
     let iiifUrl = chicagos.data.config.iiif_url;
     for(let i = 0; i < (chicagos.data.data.length)/5; i++) {
@@ -285,8 +112,8 @@ async function loadChicago() {
                 idx++;
                 
             }  
-            if(idx === 10) {
-                chicagos = await getChicago(numPages+1);
+            if(idx === chicagos.data.data.length) {
+                chicagos = await getChicago(numPages+1, 10);
                 idx = 0;
             }    
         }
@@ -294,13 +121,14 @@ async function loadChicago() {
     }
 }
 
-async function main() {
+async function loadGallery() {
     loadHarvard();
     loadChicago();
 }
 
+loadGallery();
+
 async function generateRandomHarvardPainting(event) {
-    var username = firebase.auth().currentUser.displayName;
     $(`#buttons`).replaceWith(`<div id="buttons"></div>`);
     $(`#question`).replaceWith(`<div class="subtitle sentence is-3" id="question">Who is the artist?</div>`);
     $(`.score`).replaceWith(`<h4 class="score title">Score: ${score}</h4>`);
@@ -314,12 +142,10 @@ async function generateRandomHarvardPainting(event) {
         <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
         <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
     </div> `);
-    harvards = await getHarvard(0);
+    harvards = await getHarvard(0, 100);
     let randomChoice = Math.floor(Math.random() * 4) + 1;
     let randomIndex = Math.floor(Math.random() * harvards.data.records.length);
-    console.log(harvards.data.records.length);
     while(randomIndex < harvards.data.records.length) {
-        console.log(randomIndex);
         if(harvards.data.records[randomIndex].primaryimageurl !== null &&
             'people' in harvards.data.records[randomIndex] && 
             'primaryimageurl' in harvards.data.records[randomIndex]) {
@@ -361,14 +187,12 @@ async function generateRandomChicagoPainting(event) {
         <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
         <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
     </div> `);
-    chicagos = await getChicago(0);
+    chicagos = await getChicago(0, 100);
     let iiifUrl = chicagos.data.config.iiif_url;
     let newUrl = iiifUrl.concat("/");
     let randomChoice = Math.floor(Math.random() * 4) + 1;
     let randomIndex = Math.floor(Math.random() * (chicagos.data.data.length));
-    console.log(chicagos.data.data[3]);
     while(randomIndex < chicagos.data.data.length) {
-        console.log(randomIndex);
         if('image_id' in chicagos.data.data[randomIndex] && chicagos.data.data[randomIndex].image_id !== null) {
             let imageId = chicagos.data.data[randomIndex].image_id;
             newUrl = newUrl.concat(imageId);
@@ -455,7 +279,6 @@ function generateRandomChoices() {
             }
         }
     }
-    console.log(randomArtists);
 }
 
 function handleHarvardSubmit(event) {
@@ -470,6 +293,7 @@ function handleHarvardSubmit(event) {
     }    
     if(selectedValue === harvardArtistChoice) {
         score = score+5;
+        
         alert("correct!");
         generateRandomHarvardPainting();
     } else {
@@ -496,61 +320,11 @@ function handleChicagoSubmit(event) {
     }
 };
 
-main();
-
 $(window).scroll(async function() {
     if ($(window).scrollTop() == $(document).height()-$(window).height() && !loading){
         loading = true;
         numPages++;
-        main();
+        loadGallery();
         loading = false;
     }
 })
-
-const toggleSwitch = document.querySelector('input[type="checkbox"]');
-function switchTheme(e) {
-    if(e.target.checked) {
-        console.log("toggled");
-        document.getElementById("darkmode").innerHTML = "Disable Dark Mode";
-        document.getElementById("heroHead").classList.add('is-dark');
-        if(document.getElementById("harvardButton") !== null) {
-            document.getElementById("harvardButton").classList.add('is-inverted');
-        }
-        if(document.getElementById("chicagoButton") !== null) {
-            document.getElementById("chicagoButton").classList.add('is-inverted');
-        }
-        if(document.getElementById("section2") !== null) {
-            document.getElementById("section2").classList.add('has-background-grey');
-        }
-        if(document.getElementById("section3") !== null) {
-            document.getElementById("section3").classList.add('has-background-dark');
-        }
-        if(document.getElementById("logout") !== null) {
-            document.getElementById("logout").classList.add("is-inverted");
-        }
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-        console.log("undo");
-        document.getElementById("darkmode").innerHTML = "Enable Dark Mode";
-        document.getElementById("heroHead").classList.remove('is-dark');
-        if(document.getElementById("harvardButton") !== null) {
-            document.getElementById("harvardButton").classList.remove('is-inverted');
-        }
-        if(document.getElementById("chicagoButton") !== null) {
-            document.getElementById("chicagoButton").classList.remove('is-inverted');
-        }
-        if(document.getElementById("section2") !== null) {
-            document.getElementById("section2").classList.remove('has-background-grey');
-        }
-        if(document.getElementById("section3") !== null) {
-            document.getElementById("section3").classList.remove('has-background-dark');
-        }
-        if(document.getElementById("logout") !== null) {
-            document.getElementById("logout").classList.remove("is-inverted");
-        }
-        document.documentElement.setAttribute('data-theme', 'light');
-    }
-}
-if(toggleSwitch !== null) {
-    toggleSwitch.addEventListener('change', switchTheme, true);
-}
