@@ -32,13 +32,10 @@ function switchTheme(e) {
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         var userId = firebase.auth().currentUser.uid;
-        console.log(userId);
         var users = firebase.database().ref('users');
         var user = users.child(userId);
-        console.log(user.toString());
         user.on('value', (snapshot) => {
             const data = snapshot.val();
-            console.log(data.darkmode);
             var currentMode = data.darkmode;
             if(currentMode === true) {
                 darkMode();
@@ -49,7 +46,9 @@ firebase.auth().onAuthStateChanged(function(user) {
                 'user_id': userId,
                 'darkmode': isDark,
             });
-            console.log(isDark);
+            if(isDark) {
+                toggleSwitch.checked = true;
+            }
         });
     } else {
       // No user is signed in.

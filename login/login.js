@@ -106,7 +106,7 @@ $(`#signup`).on("click", function() {
             </div>
             </section>`)
             displayLogin();
-            console.log("success")
+            console.log("success");
         })
         .catch(function(error) {
             var errorMessage = error.message;
