@@ -48,7 +48,7 @@ function displayLogin() {
             </div>
             <div class="field">
                 <p class="control">
-                    <button class="button is-light" id="backSend"><a href="index.html">Back</a></button>
+                    <button class="button is-light" id="backSend"><a href="/index.html">Back</a></button>
                 </p>
             </div>
         </div>
