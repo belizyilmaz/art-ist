@@ -63,7 +63,7 @@ function loginRequest() {
         password = $(`.loginPasswordInput`).val().trim();
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            window.location.href = "/game.html";
+            window.location.href = "game.html";
         })
         .catch((error) => {
             var errorMessage = error.message;
