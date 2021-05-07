@@ -4,10 +4,12 @@ let randomPainting;
 let harvardArtistChoice = "";
 let chicagoArtistChoice = "";
 let score = 0;
+let highest = 0;
 let randomArtists = [];
 
 let harvards = [];
 let chicagos = [];
+
 
 async function getHarvard(pages, size) {
     const result = await axios({
@@ -131,7 +133,8 @@ loadGallery();
 async function generateRandomHarvardPainting(event) {
     $(`#buttons`).replaceWith(`<div id="buttons"></div>`);
     $(`#question`).replaceWith(`<div class="subtitle sentence is-3" id="question">Who is the artist?</div>`);
-    $(`.score`).replaceWith(`<h4 class="score title">Score: ${score}</h4>`);
+    $(`#scoreTitle`).replaceWith(`<h4 class="score title" id="scoreTitle">Score: </h4>`);
+    $(`#highestScore`).replaceWith(`<h4 class="score subtitle is-4" id="highestScore">Your highest score is ${highest} </h4>`);
     $(`#buttons`).append(`
     <button class="button is-black is-medium" id="submit"> Submit Answer </button>
     <button class="button is-black is-outlined is-medium" id="next"> Next </button>`);
@@ -150,7 +153,7 @@ async function generateRandomHarvardPainting(event) {
             'people' in harvards.data.records[randomIndex] && 
             'primaryimageurl' in harvards.data.records[randomIndex]) {
             randomPainting = harvards.data.records[randomIndex].primaryimageurl;
-                break;
+            break;
         } 
         randomIndex = Math.floor(Math.random() * harvards.data.records.length);
     }
@@ -175,7 +178,8 @@ async function generateRandomHarvardPainting(event) {
 
 async function generateRandomChicagoPainting(event) {
     $(`#buttons`).replaceWith(`<div id="buttons"></div>`);
-    $(`.score`).replaceWith(`<h4 class="score title">Score: ${score}</h4>`);
+    $(`#scoreTitle`).replaceWith(`<h4 class="score title" id="scoreTitle">Score: </h4>`);
+    $(`#highestScore`).replaceWith(`<h4 class="score subtitle is-4" id="highestScore">Your highest score is ${highest}</h4>`);
     $(`#question`).replaceWith(`<div class="subtitle sentence is-3" id="question">Who is the artist?</div>`);
     $(`#buttons`).append(`
     <button class="button is-black is-medium" id="submit"> Submit Answer </button>
@@ -200,7 +204,7 @@ async function generateRandomChicagoPainting(event) {
             if(newUrl !== null && chicagos.data.data[randomIndex].artist_title !== null) {
                 randomPainting = newUrl;
                 break;
-            } 
+            }
         }
         randomIndex = Math.floor(Math.random() * chicagos.data.data.length);
     }
@@ -293,7 +297,6 @@ function handleHarvardSubmit(event) {
     }    
     if(selectedValue === harvardArtistChoice) {
         score = score+5;
-        
         alert("correct!");
         generateRandomHarvardPainting();
     } else {

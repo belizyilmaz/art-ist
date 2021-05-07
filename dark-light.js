@@ -32,6 +32,7 @@ function switchTheme(e) {
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         var userId = firebase.auth().currentUser.uid;
+        var userName = firebase.auth().currentUser.displayName;
         var users = firebase.database().ref('users');
         var user = users.child(userId);
         user.on('value', (snapshot) => {
@@ -45,6 +46,7 @@ firebase.auth().onAuthStateChanged(function(user) {
             user.set({
                 'user_id': userId,
                 'darkmode': isDark,
+                'user_name': userName,
             });
             if(isDark) {
                 toggleSwitch.checked = true;
@@ -53,7 +55,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     } else {
       // No user is signed in.
     }
-  });
+});
 
 if(toggleSwitch !== null) {
     toggleSwitch.addEventListener('change', switchTheme, false);
