@@ -87,16 +87,17 @@ $(`#signup`).on("click", function() {
             user.updateProfile({
                 displayName: firstName,
             }).then(function() {
-                console.log("name set");
+                var newUserRef = usersRef.child(user.uid);
+                newUserRef.set({
+                    'user_id': user.uid,
+                    'darkmode': false,
+                    'user_name': user.displayName,
+                });
+                console.log("name set to " + user.displayName);
             }).catch(function(error) {
                 var errorMessage = error.message;
                 alert(errorMessage);
                 console.log(error);
-            });
-            var newUserRef = usersRef.child(user.uid);
-            newUserRef.set({
-                'user_id': user.uid,
-                'darkmode': false,
             });
             console.log(userCredential);
             $(`#messageSection`).replaceWith(`<section class="section has-background-light" id="messageSection">
