@@ -16,6 +16,7 @@ const toggleSwitch = document.querySelector('input[type="checkbox"]');
 
 function switchTheme(e) {
     var userId = firebase.auth().currentUser.uid;
+    var userName = firebase.auth().currentUser.displayName;
     var users = firebase.database().ref('users');
     var user = users.child(userId);
     if(e.target.checked) {
@@ -26,6 +27,7 @@ function switchTheme(e) {
     user.set({
         'user_id': userId,
         'darkmode': isDark,
+        'user_name': userName,
     });
 }
 
