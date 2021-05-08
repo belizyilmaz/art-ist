@@ -44,7 +44,6 @@ if(toggleSwitch !== null) {
 
 function darkMode() {
     isDark = true;
-    console.log("toggled");
     document.getElementById("darkmode").innerHTML = "Disable Dark Mode";
     document.getElementById("heroHead").classList.add('is-dark');
     if(document.getElementById("harvardButton") !== null) {
@@ -67,7 +66,6 @@ function darkMode() {
 
 function lightMode() {
     isDark = false;
-    console.log("undo");
     document.getElementById("darkmode").innerHTML = "Enable Dark Mode";
     document.getElementById("heroHead").classList.remove('is-dark');
     if(document.getElementById("harvardButton") !== null) {

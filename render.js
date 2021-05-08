@@ -153,10 +153,10 @@ async function generateRandomHarvardPainting(event) {
     <button class="button is-primary is-outlined is-medium" id="next"> Next </button>`);
     $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
     $(`#choices`).replaceWith(`<div id="choices">
-        <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
-        <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
-        <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
-        <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
+        <div id="1"> <input type="radio" value="A" id="id1"> </div>
+        <div id="2"> <input type="radio" value="B" id="id2"> </div>
+        <div id="3"> <input type="radio" value="C" id="id3"> </div>
+        <div id="4"> <input type="radio" value="D" id="id4"> </div>
     </div> `);
     harvards = await getHarvard(0, 100);
     let randomChoice = Math.floor(Math.random() * 4) + 1;
@@ -181,7 +181,7 @@ async function generateRandomHarvardPainting(event) {
             }
             harvardArtistChoice = harvardArtistChoice.concat(" and ");
         }
-        $(`#${randomChoice.toString(10)}`).append(`<h5 class="sentence subtitle">${harvardArtistChoice}</h5>`);
+        $(`#${randomChoice.toString(10)}`).append(`<label class="sentence subtitle"> ${harvardArtistChoice}</label>`);
         document.getElementById(`id${randomChoice.toString(10)}`).value = harvardArtistChoice;
         putChoicesRandomly(randomChoice);
         console.log(harvardArtistChoice);
@@ -199,10 +199,10 @@ async function generateRandomChicagoPainting(event) {
     <button class="button is-primary is-outlined is-medium" id="next"> Next </button>`);
     $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
     $(`#choices`).replaceWith(`<div id="choices">
-        <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
-        <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
-        <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
-        <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
+        <div id="1"> <input type="radio" value="A" id="id1"> </div>
+        <div id="2"> <input type="radio" value="B" id="id2"> </div>
+        <div id="3"> <input type="radio" value="C" id="id3"> </div>
+        <div id="4"> <input type="radio" value="D" id="id4"> </div>
     </div> `);
     chicagos = await getChicago(0, 100);
     let iiifUrl = chicagos.data.config.iiif_url;
@@ -224,7 +224,7 @@ async function generateRandomChicagoPainting(event) {
     chicagoArtistChoice = "";
     $(`#paintingEx`).append(`<img src=${randomPainting} width=200 height=200></img>`)
     chicagoArtistChoice = chicagoArtistChoice.concat(chicagos.data.data[randomIndex].artist_title);            
-    $(`#${randomChoice.toString(10)}`).append(`<h5 class="sentence subtitle">${chicagoArtistChoice}</h5>`);
+    $(`#${randomChoice.toString(10)}`).append(`<label class="sentence subtitle"> ${chicagoArtistChoice}</label>`);
     document.getElementById(`id${randomChoice.toString(10)}`).value = chicagoArtistChoice
     putChoicesRandomly(randomChoice);
     console.log(chicagoArtistChoice);
@@ -237,7 +237,7 @@ function putChoicesRandomly(answer) {
     let randomChoice2 = Math.floor(Math.random() * 4) + 1;
     while(randomChoice2 < 5) {
         if(answer !== randomChoice2) {
-            $(`#${randomChoice2.toString(10)}`).append(`<h5 class="sentence subtitle">${randomArtists[0]}</h5>`);
+            $(`#${randomChoice2.toString(10)}`).append(`<label class="sentence subtitle"> ${randomArtists[0]}</label>`);
             document.getElementById(`id${randomChoice2.toString(10)}`).value = randomArtists[0]
             break;
         }
@@ -246,7 +246,7 @@ function putChoicesRandomly(answer) {
     let randomChoice3 = Math.floor(Math.random() * 4) + 1;
     while(randomChoice3 < 5) {
         if(answer !== randomChoice3 && randomChoice2 !== randomChoice3) {
-            $(`#${randomChoice3.toString(10)}`).append(`<h5 class="sentence subtitle">${randomArtists[1]}</h5>`);
+            $(`#${randomChoice3.toString(10)}`).append(`<label class="sentence subtitle"> ${randomArtists[1]}</label>`);
             document.getElementById(`id${randomChoice3.toString(10)}`).value = randomArtists[1]
             break;
         }
@@ -256,7 +256,7 @@ function putChoicesRandomly(answer) {
     while(randomChoice4 < 5) {
         if(answer !== randomChoice4 && randomChoice2 !== randomChoice4 &&
             randomChoice3 !== randomChoice4) {
-            $(`#${randomChoice4.toString(10)}`).append(`<h5 class="sentence subtitle">${randomArtists[2]}</h5>`);
+            $(`#${randomChoice4.toString(10)}`).append(`<label class="sentence subtitle"> ${randomArtists[2]}</label>`);
             document.getElementById(`id${randomChoice4.toString(10)}`).value = randomArtists[2]
             break;
         }
@@ -265,7 +265,6 @@ function putChoicesRandomly(answer) {
 }
 
 async function generateRandomChoices() {
-    let randomIndex;
     let harvardOrChicago;
     randomArtists = [];
     while(randomArtists.length < 3) {
@@ -314,7 +313,7 @@ async function generateRandomChoices() {
 
 function handleHarvardSubmit(event) {
     event.preventDefault();
-    const choices = document.querySelectorAll('input[name="choice"]');
+    const choices = document.querySelectorAll('input[type="radio"]');
     let selectedValue;
     for (const choice of choices) {
         if (choice.checked) {
@@ -343,7 +342,7 @@ function handleHarvardSubmit(event) {
 
 function handleChicagoSubmit(event) {
     event.preventDefault();
-    const choices = document.querySelectorAll('input[name="choice"]');
+    const choices = document.querySelectorAll('input[type="radio"]');
     let selectedValue;
     for (const choice of choices) {
         if (choice.checked) {

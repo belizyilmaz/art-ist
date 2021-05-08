@@ -66,9 +66,7 @@ function loginRequest() {
             window.location.href = "game.html";
         })
         .catch((error) => {
-            var errorMessage = error.message;
-            alert(errorMessage);
-            console.log(error);
+            alert(error.message);
         });
 
         return false;
@@ -94,11 +92,8 @@ $(`#signup`).on("click", function() {
                     'user_name': user.displayName,
                     'highest_score': 0,
                 });
-                console.log("name set to " + user.displayName);
             }).catch(function(error) {
-                var errorMessage = error.message;
-                alert(errorMessage);
-                console.log(error);
+                alert(error.message);
             });
             $(`#messageSection`).replaceWith(`<section class="section has-background-light" id="messageSection">
             <div class="container">
@@ -110,9 +105,7 @@ $(`#signup`).on("click", function() {
             console.log("success");
         })
         .catch(function(error) {
-            var errorMessage = error.message;
-            alert(errorMessage);
-            console.log(error);
+            alert(error.message);
         });
         return false;
     });
@@ -122,9 +115,7 @@ $(`.logOutButton`).on("click", function() {
     firebase.auth().signOut().then(() => {
         console.log("logged out");
       }).catch((error) => {
-        var errorMessage = error.message;
-        alert(errorMessage);
-        console.log(error);
+        alert(error.message);
       });
 });
 
