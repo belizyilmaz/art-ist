@@ -153,10 +153,10 @@ async function generateRandomHarvardPainting(event) {
     <button class="button is-primary is-outlined is-medium" id="next"> Next </button>`);
     $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
     $(`#choices`).replaceWith(`<div id="choices">
-        <div id="1"> <input type="radio" value="A" id="id1"> </div>
-        <div id="2"> <input type="radio" value="B" id="id2"> </div>
-        <div id="3"> <input type="radio" value="C" id="id3"> </div>
-        <div id="4"> <input type="radio" value="D" id="id4"> </div>
+        <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
+        <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
+        <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
+        <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
     </div> `);
     harvards = await getHarvard(0, 100);
     let randomChoice = Math.floor(Math.random() * 4) + 1;
@@ -199,10 +199,10 @@ async function generateRandomChicagoPainting(event) {
     <button class="button is-primary is-outlined is-medium" id="next"> Next </button>`);
     $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
     $(`#choices`).replaceWith(`<div id="choices">
-        <div id="1"> <input type="radio" value="A" id="id1"> </div>
-        <div id="2"> <input type="radio" value="B" id="id2"> </div>
-        <div id="3"> <input type="radio" value="C" id="id3"> </div>
-        <div id="4"> <input type="radio" value="D" id="id4"> </div>
+        <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
+        <div id="2"> <input type="radio" name="choice" value="B" id="id2"> </div>
+        <div id="3"> <input type="radio" name="choice" value="C" id="id3"> </div>
+        <div id="4"> <input type="radio" name="choice" value="D" id="id4"> </div>
     </div> `);
     chicagos = await getChicago(0, 100);
     let iiifUrl = chicagos.data.config.iiif_url;
@@ -313,7 +313,7 @@ async function generateRandomChoices() {
 
 function handleHarvardSubmit(event) {
     event.preventDefault();
-    const choices = document.querySelectorAll('input[type="radio"]');
+    const choices = document.querySelectorAll('input[name="choice"]');
     let selectedValue;
     for (const choice of choices) {
         if (choice.checked) {
@@ -342,7 +342,7 @@ function handleHarvardSubmit(event) {
 
 function handleChicagoSubmit(event) {
     event.preventDefault();
-    const choices = document.querySelectorAll('input[type="radio"]');
+    const choices = document.querySelectorAll('input[name="choice"]');
     let selectedValue;
     for (const choice of choices) {
         if (choice.checked) {
