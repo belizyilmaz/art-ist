@@ -1,4 +1,4 @@
-import {firebaseConfig} from 'login.js';
+import {firebaseConfig} from './login.js';
 
 let isDark;
 
