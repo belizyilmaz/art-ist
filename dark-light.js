@@ -1,22 +1,11 @@
-let isDark;
+import {firebaseConfig} from '/login.js';
 
-var firebaseConfig = {
-    apiKey: "AIzaSyBXbgKrI6lK1bBUQC75dLVjgplGQk0ZW9s",
-    authDomain: "art-ist.firebaseapp.com",
-    databaseURL: "https://art-ist-default-rtdb.firebaseio.com",
-    projectId: "art-ist",
-    storageBucket: "art-ist.appspot.com",
-    messagingSenderId: "1005640377141",
-    appId: "1:1005640377141:web:06249e7134eb815b83627c",
-    measurementId: "G-THFRVF1K0C"
-};
-firebase.initializeApp(firebaseConfig);
+let isDark;
 
 const toggleSwitch = document.querySelector('input[type="checkbox"]');
 
 function switchTheme(e) {
     var userId = firebase.auth().currentUser.uid;
-    var userName = firebase.auth().currentUser.displayName;
     var users = firebase.database().ref('users');
     var user = users.child(userId);
     if(e.target.checked) {
@@ -24,17 +13,14 @@ function switchTheme(e) {
     } else {
         lightMode();
     }
-    user.set({
-        'user_id': userId,
-        'darkmode': isDark,
-        'user_name': userName,
+    user.update({
+        'darkmode': isDark
     });
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         var userId = firebase.auth().currentUser.uid;
-        var userName = firebase.auth().currentUser.displayName;
         var users = firebase.database().ref('users');
         var user = users.child(userId);
         user.on('value', (snapshot) => {
@@ -45,18 +31,11 @@ firebase.auth().onAuthStateChanged(function(user) {
             } else {
                 lightMode();
             }
-            user.set({
-                'user_id': userId,
-                'darkmode': isDark,
-                'user_name': userName,
-            });
             if(isDark) {
                 toggleSwitch.checked = true;
             }
         });
-    } else {
-      // No user is signed in.
-    }
+    } 
 });
 
 if(toggleSwitch !== null) {

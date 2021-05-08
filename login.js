@@ -1,4 +1,4 @@
-var firebaseConfig = {
+export var firebaseConfig = {
     apiKey: "AIzaSyBXbgKrI6lK1bBUQC75dLVjgplGQk0ZW9s",
     authDomain: "art-ist.firebaseapp.com",
     databaseURL: "https://art-ist-default-rtdb.firebaseio.com",
@@ -92,6 +92,7 @@ $(`#signup`).on("click", function() {
                     'user_id': user.uid,
                     'darkmode': false,
                     'user_name': user.displayName,
+                    'highest_score': 0,
                 });
                 console.log("name set to " + user.displayName);
             }).catch(function(error) {
@@ -99,7 +100,6 @@ $(`#signup`).on("click", function() {
                 alert(errorMessage);
                 console.log(error);
             });
-            console.log(userCredential);
             $(`#messageSection`).replaceWith(`<section class="section has-background-light" id="messageSection">
             <div class="container">
                 <h1 class="subtitle is-4">You have successfully signed up. Log in to continue with 

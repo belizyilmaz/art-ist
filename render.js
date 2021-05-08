@@ -1,15 +1,29 @@
+import {firebaseConfig} from '/login.js';
+
 let numPages = 0;
 let loading = false;
 let randomPainting;
 let harvardArtistChoice = "";
 let chicagoArtistChoice = "";
 let score = 0;
-let highest = 0;
 let randomArtists = [];
 
 let harvards = [];
 let chicagos = [];
 
+firebase.auth().onAuthStateChanged(function(user) {
+    if(user) {
+        var userId = firebase.auth().currentUser.uid;
+        var users = firebase.database().ref('users');
+        var user = users.child(userId);
+        user.on('value', (snapshot) => {
+            if(snapshot.val() !== null) {
+                var currentHigh = snapshot.val().highest_score;
+                $(`#highestScore`).replaceWith(`<h4 class="score subtitle is-4" id="highestScore">Your highest score is ${currentHigh}</h4>`);
+            }
+        });
+    }
+});
 
 async function getHarvard(pages, size) {
     const result = await axios({
@@ -57,7 +71,7 @@ async function loadHarvard() {
                             if(k === harvards.data.records[current].people.length-1) {
                                 break;
                             }
-                            artists = artists.concat(", ");
+                            artists = artists.concat(" and ");
                         }
                     }
                     $(`#harvardRow${i+(3*numPages)}`).append(`<td class="sentence subtitle">
@@ -133,11 +147,10 @@ loadGallery();
 async function generateRandomHarvardPainting(event) {
     $(`#buttons`).replaceWith(`<div id="buttons"></div>`);
     $(`#question`).replaceWith(`<div class="subtitle sentence is-3" id="question">Who is the artist?</div>`);
-    $(`#scoreTitle`).replaceWith(`<h4 class="score title" id="scoreTitle">Score: </h4>`);
-    $(`#highestScore`).replaceWith(`<h4 class="score subtitle is-4" id="highestScore">Your highest score is ${highest} </h4>`);
+    $(`#scoreTitle`).replaceWith(`<h4 class="score title" id="scoreTitle">Score: ${score} </h4>`);
     $(`#buttons`).append(`
-    <button class="button is-black is-medium" id="submit"> Submit Answer </button>
-    <button class="button is-black is-outlined is-medium" id="next"> Next </button>`);
+    <button class="button is-primary is-medium" id="submit"> Submit Answer </button>
+    <button class="button is-primary is-outlined is-medium" id="next"> Next </button>`);
     $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
     $(`#choices`).replaceWith(`<div id="choices">
         <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
@@ -150,6 +163,7 @@ async function generateRandomHarvardPainting(event) {
     let randomIndex = Math.floor(Math.random() * harvards.data.records.length);
     while(randomIndex < harvards.data.records.length) {
         if(harvards.data.records[randomIndex].primaryimageurl !== null &&
+            harvards.data.records[randomIndex].people !== null &&
             'people' in harvards.data.records[randomIndex] && 
             'primaryimageurl' in harvards.data.records[randomIndex]) {
             randomPainting = harvards.data.records[randomIndex].primaryimageurl;
@@ -178,12 +192,11 @@ async function generateRandomHarvardPainting(event) {
 
 async function generateRandomChicagoPainting(event) {
     $(`#buttons`).replaceWith(`<div id="buttons"></div>`);
-    $(`#scoreTitle`).replaceWith(`<h4 class="score title" id="scoreTitle">Score: </h4>`);
-    $(`#highestScore`).replaceWith(`<h4 class="score subtitle is-4" id="highestScore">Your highest score is ${highest}</h4>`);
+    $(`#scoreTitle`).replaceWith(`<h4 class="score title" id="scoreTitle">Score: ${score}</h4>`);
     $(`#question`).replaceWith(`<div class="subtitle sentence is-3" id="question">Who is the artist?</div>`);
     $(`#buttons`).append(`
-    <button class="button is-black is-medium" id="submit"> Submit Answer </button>
-    <button class="button is-black is-outlined is-medium" id="next"> Next </button>`);
+    <button class="button is-primary is-medium" id="submit"> Submit Answer </button>
+    <button class="button is-primary is-outlined is-medium" id="next"> Next </button>`);
     $(`#paintingEx`).replaceWith(`<div id="paintingEx"> </div>`);
     $(`#choices`).replaceWith(`<div id="choices">
         <div id="1"> <input type="radio" name="choice" value="A" id="id1"> </div>
@@ -251,35 +264,49 @@ function putChoicesRandomly(answer) {
     } 
 }
 
-function generateRandomChoices() {
+async function generateRandomChoices() {
     let randomIndex;
     let harvardOrChicago;
     randomArtists = [];
     while(randomArtists.length < 3) {
         harvardOrChicago = Math.floor(Math.random() * 2) + 1;
         if(harvardOrChicago === 1){
-            randomIndex = Math.floor(Math.random() * chicagos.data.data.length);
-            while(randomIndex < chicagos.data.data.length) {
-                if(chicagos.data.data[randomIndex].artist_title !== null) {
-                    if(!randomArtists.includes(chicagos.data.data[randomIndex].artist_title) &&
-                    chicagos.data.data[randomIndex].artist_title !== chicagoArtistChoice) {
-                        randomArtists.push(chicagos.data.data[randomIndex].artist_title);
+            let idx = 0;
+            let pg = 0;
+            while(idx < 100) {
+                if(chicagos.data.data[idx].artist_title !== null) {
+                    if(!randomArtists.includes(chicagos.data.data[idx].artist_title) &&
+                    chicagos.data.data[idx].artist_title !== chicagoArtistChoice) {
+                        randomArtists.push(chicagos.data.data[idx].artist_title);
+                        idx++;
                         break;
-                    }
+                    } 
                 } 
-                randomIndex = Math.floor(Math.random() * chicagos.data.data.length);
+                idx++;
+                if(idx === chicagos.data.data.length) {
+                    pg++;
+                    harvards = await getChicago(pg, 100);
+                    idx = 0;
+                }
             }
         } else if (harvardOrChicago === 2) {
-            randomIndex = Math.floor(Math.random() * harvards.data.records.length);
-            while(randomIndex < harvards.data.records.length) {
-                if('people' in harvards.data.records[randomIndex]) {
-                    if(!randomArtists.includes(harvards.data.records[randomIndex].people[0].name) &&
-                    harvards.data.records[randomIndex].people[0].name !== harvardArtistChoice){
-                        randomArtists.push(harvards.data.records[randomIndex].people[0].name);
+            let idx = 0;
+            let pg = 0;
+            while(idx < harvards.data.records.length) {
+                if('people' in harvards.data.records[idx]) {
+                    if(!randomArtists.includes(harvards.data.records[idx].people[0].name) &&
+                    harvards.data.records[idx].people[0].name !== harvardArtistChoice){
+                        randomArtists.push(harvards.data.records[idx].people[0].name); 
+                        idx++;
                         break;
                     }
                 }
-                randomIndex = Math.floor(Math.random() * harvards.data.records.length);
+                idx++;
+                if(idx === harvards.data.records.length) {
+                    pg++;
+                    harvards = await getHarvard(pg, 100);
+                    idx = 0;
+                }
             }
         }
     }
@@ -297,6 +324,16 @@ function handleHarvardSubmit(event) {
     }    
     if(selectedValue === harvardArtistChoice) {
         score = score+5;
+        var userId = firebase.auth().currentUser.uid;
+        var users = firebase.database().ref('users');
+        var user = users.child(userId);
+        user.on('value', (snapshot) => {
+            const data = snapshot.val();
+            var currentHigh = data.highest_score;
+            if(score > currentHigh) {
+                user.update({'highest_score': score});
+            } 
+        });
         alert("correct!");
         generateRandomHarvardPainting();
     } else {
@@ -316,6 +353,16 @@ function handleChicagoSubmit(event) {
     }    
     if(selectedValue === chicagoArtistChoice) {
         score = score+5;
+        var userId = firebase.auth().currentUser.uid;
+        var users = firebase.database().ref('users');
+        var user = users.child(userId);
+        user.on('value', (snapshot) => {
+            const data = snapshot.val();
+            var currentHigh = data.highest_score;
+            if(score > currentHigh) {
+                user.update({'highest_score': score});
+            } 
+        });
         alert("correct!");
         generateRandomChicagoPainting();
     } else {
