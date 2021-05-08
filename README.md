@@ -1,5 +1,5 @@
 # Art-Ist Game
-A virtual museum where you can view two different galleries: Harvard Museum and Art Institute of Chicago and play the art-artist matching game
+A virtual museum where you can view two different galleries: Harvard Museum and Art Institute of Chicago, and play the art-artist matching game
 
 <img width="1280" alt="Screen Shot 2021-05-08 at 4 14 22 PM" src="https://user-images.githubusercontent.com/54331189/117540503-9591dc00-b018-11eb-99ae-454246e9e683.png">
 <img width="1279" alt="Screen Shot 2021-05-08 at 4 14 12 PM" src="https://user-images.githubusercontent.com/54331189/117540499-90349180-b018-11eb-9585-bf22816e01e1.png">
