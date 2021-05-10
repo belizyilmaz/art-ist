@@ -30,7 +30,7 @@ async function getHarvard(pages, size) {
         method: 'get',
         url: "https://api.harvardartmuseums.org/object",
         params: {
-            "apikey": "2f6192ac-c482-48b8-b123-eed87d6b5a70",
+            "apikey": "API-KEY",
             "size": size,
             "classification": "Paintings",
             "page": pages+1,
